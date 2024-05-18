@@ -1,0 +1,22 @@
+.displayContainer {
+    display: flex;
+    justify-content: space-between;
+    background-color: #24232C;
+    padding: 25px;
+    width: 450px;
+    margin-top: 30px;
+}
+
+#password {
+    margin-left: 0px;
+    margin-right: 0px;
+    color: #E6E5EA;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+img {
+    width:6%;
+    height:6%;
+    margin-top: 10px;
+}
