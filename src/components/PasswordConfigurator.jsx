@@ -14,7 +14,7 @@ function PasswordConfigurator() {
 
             <div className='lengthContainer'>
                 <div>Character Length</div>
-                <div>10</div>
+                <div id='length'>{length}</div>
             </div>
 
             <input
@@ -52,10 +52,10 @@ function PasswordConfigurator() {
                 <div id='strengthHeader'>STRENGTH</div>
                 <div id='strengthValue'>MEDIUM</div>
                 <div className='strengthIndicator'>
-                    <div className='strengthBar'></div>
-                    <div className='strengthBar'></div>
-                    <div className='strengthBar'></div>
-                    <div className='strengthBar'></div>
+                    <div className='strengthBarEmpty'></div>
+                    <div className='strengthBarFilled'></div>
+                    <div className='strengthBarFilled'></div>
+                    <div className='strengthBarFilled'></div>
                 </div>
             </div>
 
