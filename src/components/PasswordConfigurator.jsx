@@ -4,11 +4,33 @@ import { useState } from 'react';
 function PasswordConfigurator() {
 
     const [length, setLength] = useState(10);
+    const [checkboxes, setCheckboxes] = useState([
+        { id: 'uppercase', name: 'Uppercase', checked: false, label: 'Include Uppercase Letters' },
+        { id: 'lowercase', name: 'Lowercase', checked: false, label: 'Include Lowercase Letters' },
+        { id: 'numbers', name: 'Numbers', checked: false, label: 'Include Numbers' },
+        { id: 'symbols', name: 'Symbols', checked: false, label: 'Include Symbols' },
+    ]);
+    const [checkboxesSelected, setCheckboxesSelected] = useState(0);
+    // const [strengthIndicator, setStrengthIndicator] = useState('');
 
     const handleSliderChange = (event) => {
         setLength(event.target.value);
     };
 
+    const handleCheckboxChange = (id) => {
+        setCheckboxes((prevState) => {
+          const newCheckboxes = prevState.map((checkbox) =>
+            checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
+          );
+    
+          const selectedCount = newCheckboxes.filter((checkbox) => checkbox.checked).length;
+          setCheckboxesSelected(selectedCount);
+          
+          console.log(checkboxesSelected);
+          return newCheckboxes;
+        });
+    };
+    
     return (
         <div className='configurationContainer'>
 
@@ -29,24 +51,21 @@ function PasswordConfigurator() {
 
 
             <div className='optionsContainer'>
-                <div className='option'>
-                    <input type="checkbox" id="uppercase" name="uppercase" value="Uppercase"/>
-                    <label htmlFor="uppercase"> Include Uppercase Letters</label>
-                </div>
-                <div className='option'>
-                    <input type="checkbox" id="lowercase" name="lowercase" value="Lowercase"/>
-                    <label htmlFor="lowercase"> Include Lowercase Letters</label>
-                </div>
-                <div className='option'>
-                    <input type="checkbox" id="numbers" name="numbers" value="Numbers"/>
-                    <label htmlFor="numbers"> Include Numbers</label>
-                </div>
-                <div className='option'>
-                    <input type="checkbox" id="symbols" name="symbols" value="Symbols"/>
-                    <label htmlFor="symbols"> Include Symbols</label>
-                </div>
-            </div>
+                {checkboxes.map((checkbox) => (
+                    <div className='option' key={checkbox.id}>
+                        <input
+                            type="checkbox"
+                            id={checkbox.id}
+                            name={checkbox.name}
+                            value={checkbox.name}
+                            checked={checkbox.checked}
+                            onChange={() => handleCheckboxChange(checkbox.id)}
+                        />
+                        <label htmlFor={checkbox.id}> {checkbox.label}</label>
 
+                    </div>
+                ))}
+            </div>
 
             <div className='strengthContainer'>
                 <div id='strengthHeader'>STRENGTH</div>
