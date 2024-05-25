@@ -9,7 +9,6 @@ function PasswordConfigurator() {
         { id: 'numbers', name: 'Numbers', checked: false, label: 'Include Numbers' },
         { id: 'symbols', name: 'Symbols', checked: false, label: 'Include Symbols' },
     ]);
-    const [checkboxesSelected, setCheckboxesSelected] = useState(0);
     const [strengthIndicator, setStrengthIndicator] = useState({ strength: '', color: '' });
     const [strengthBars, setStrengthBars] = useState([
         { id: 0, state: false },
@@ -56,7 +55,7 @@ function PasswordConfigurator() {
         }));
 
         setStrengthBars(updatedBars);
-    }, [strengthIndicator]);
+    }, [strengthIndicator, strengthBars]);
 
     const handleSliderChange = (event) => {
         setLength(event.target.value);
@@ -67,11 +66,6 @@ function PasswordConfigurator() {
             const newCheckboxes = prevState.map((checkbox) =>
                 checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
             );
-
-            const selectedCount = newCheckboxes.filter((checkbox) => checkbox.checked).length;
-            setCheckboxesSelected(selectedCount);
-
-            console.log(checkboxesSelected);
             return newCheckboxes;
         });
     };
