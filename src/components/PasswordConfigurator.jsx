@@ -1,8 +1,7 @@
 import '../styles/PasswordConfigurator.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function PasswordConfigurator() {
-
     const [length, setLength] = useState(10);
     const [checkboxes, setCheckboxes] = useState([
         { id: 'uppercase', name: 'Uppercase', checked: false, label: 'Include Uppercase Letters' },
@@ -11,7 +10,53 @@ function PasswordConfigurator() {
         { id: 'symbols', name: 'Symbols', checked: false, label: 'Include Symbols' },
     ]);
     const [checkboxesSelected, setCheckboxesSelected] = useState(0);
-    // const [strengthIndicator, setStrengthIndicator] = useState('');
+    const [strengthIndicator, setStrengthIndicator] = useState({ strength: '', color: '' });
+    const [strengthBars, setStrengthBars] = useState([
+        { id: 0, state: false },
+        { id: 1, state: false },
+        { id: 2, state: false },
+        { id: 3, state: false },
+    ]);
+
+    useEffect(() => {
+        const count = checkboxes.filter((checkbox) => checkbox.checked).length;
+
+        switch (count) {
+            case 0:
+                setStrengthIndicator({ strength: '', color: '' });
+                break;
+            case 1:
+                setStrengthIndicator({ strength: 'TOO WEAK!', color: '#F64A4A' });
+                break;
+            case 2:
+                setStrengthIndicator({ strength: 'WEAK', color: '#FB7C58' });
+                break;
+            case 3:
+                setStrengthIndicator({ strength: 'MEDIUM', color: '#F8CD65' });
+                break;
+            case 4:
+                setStrengthIndicator({ strength: 'STRONG', color: '#A4FFAF' });
+                break;
+            default:
+                break;
+        }
+    }, [checkboxes]);
+
+    useEffect(() => {
+        const strengthLevels = {
+            'TOO WEAK!': 1,
+            'WEAK': 2,
+            'MEDIUM': 3,
+            'STRONG': 4,
+        };
+
+        const updatedBars = strengthBars.map((bar, index) => ({
+            ...bar,
+            state: strengthIndicator.strength && index < (strengthLevels[strengthIndicator.strength] || 0),
+        }));
+
+        setStrengthBars(updatedBars);
+    }, [strengthIndicator]);
 
     const handleSliderChange = (event) => {
         setLength(event.target.value);
@@ -19,21 +64,20 @@ function PasswordConfigurator() {
 
     const handleCheckboxChange = (id) => {
         setCheckboxes((prevState) => {
-          const newCheckboxes = prevState.map((checkbox) =>
-            checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
-          );
-    
-          const selectedCount = newCheckboxes.filter((checkbox) => checkbox.checked).length;
-          setCheckboxesSelected(selectedCount);
-          
-          console.log(checkboxesSelected);
-          return newCheckboxes;
+            const newCheckboxes = prevState.map((checkbox) =>
+                checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
+            );
+
+            const selectedCount = newCheckboxes.filter((checkbox) => checkbox.checked).length;
+            setCheckboxesSelected(selectedCount);
+
+            console.log(checkboxesSelected);
+            return newCheckboxes;
         });
     };
-    
+
     return (
         <div className='configurationContainer'>
-
             <div className='lengthContainer'>
                 <div>Character Length</div>
                 <div id='length'>{length}</div>
@@ -49,7 +93,6 @@ function PasswordConfigurator() {
                 onChange={handleSliderChange}
             />
 
-
             <div className='optionsContainer'>
                 {checkboxes.map((checkbox) => (
                     <div className='option' key={checkbox.id}>
@@ -61,27 +104,31 @@ function PasswordConfigurator() {
                             checked={checkbox.checked}
                             onChange={() => handleCheckboxChange(checkbox.id)}
                         />
-                        <label htmlFor={checkbox.id}> {checkbox.label}</label>
-
+                        <label htmlFor={checkbox.id}>{checkbox.label}</label>
                     </div>
                 ))}
             </div>
 
             <div className='strengthContainer'>
                 <div id='strengthHeader'>STRENGTH</div>
-                <div id='strengthValue'>MEDIUM</div>
+                <div id='strengthValue'>
+                    {strengthIndicator.strength}
+                </div>
                 <div className='strengthIndicator'>
-                    <div className='strengthBarEmpty'></div>
-                    <div className='strengthBarFilled'></div>
-                    <div className='strengthBarFilled'></div>
-                    <div className='strengthBarFilled'></div>
+                    {strengthBars.map(bar => (
+                        <div
+                            key={bar.id}
+                            className={bar.state ? 'strengthBarFilled' : 'strengthBarEmpty'}
+                            style={{ backgroundColor: bar.state ? strengthIndicator.color : '' }}
+                        ></div>
+                    ))}
                 </div>
             </div>
 
             <button className='generateButton'>GENERATE →</button>
-
         </div>
     );
 }
 
 export default PasswordConfigurator;
+

@@ -6,7 +6,7 @@ import Title from './components/Title'
 
 function App() {
 
-  const [password, setPassword] = useState('default');
+  const [password, setPassword] = useState('');
 
   return (
     <>
