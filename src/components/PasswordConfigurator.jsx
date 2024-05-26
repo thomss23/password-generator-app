@@ -1,7 +1,9 @@
 import '../styles/PasswordConfigurator.css';
 import { useEffect, useState } from 'react';
+import PropTypes from "prop-types";
+import generatePassword from '../utils/password-generator';
 
-function PasswordConfigurator() {
+function PasswordConfigurator({ setPassword }) {
     const [length, setLength] = useState(10);
     const [checkboxes, setCheckboxes] = useState([
         { id: 'uppercase', name: 'Uppercase', checked: false, label: 'Include Uppercase Letters' },
@@ -49,13 +51,15 @@ function PasswordConfigurator() {
             'STRONG': 4,
         };
 
+        const level = strengthLevels[strengthIndicator.strength] || 0;
         const updatedBars = strengthBars.map((bar, index) => ({
             ...bar,
-            state: strengthIndicator.strength && index < (strengthLevels[strengthIndicator.strength] || 0),
+            state: index < level,
         }));
 
         setStrengthBars(updatedBars);
-    }, [strengthIndicator, strengthBars]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [strengthIndicator]);
 
     const handleSliderChange = (event) => {
         setLength(event.target.value);
@@ -68,6 +72,11 @@ function PasswordConfigurator() {
             );
             return newCheckboxes;
         });
+    };
+
+    const handleGeneratePassword = () => {
+        const generatedPassword = generatePassword(strengthBars, length);
+        setPassword(generatedPassword);
     };
 
     return (
@@ -119,10 +128,13 @@ function PasswordConfigurator() {
                 </div>
             </div>
 
-            <button className='generateButton'>GENERATE →</button>
+            <button onClick={handleGeneratePassword} className='generateButton'>GENERATE →</button>
         </div>
     );
 }
 
-export default PasswordConfigurator;
+PasswordConfigurator.propTypes = {
+    setPassword: PropTypes.func.isRequired,
+};
 
+export default PasswordConfigurator;
